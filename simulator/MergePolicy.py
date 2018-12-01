@@ -322,7 +322,7 @@ class ExploringPolicy(MergePolicy):
         ratio: Size of a merge's outputs over its inputs.
     """
 
-    def __init__(self, fs, k, c=3, d=10, lambda_=1.2, ratio=1.0):
+    def __init__(self, fs, k, c=2, d=10, lambda_=1.2, ratio=1.0):
         if type(k) != int:
             raise TypeError("k must be a valid integer")
         if k < 1:
