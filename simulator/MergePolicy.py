@@ -213,6 +213,7 @@ class BinomialPolicy(MergePolicy):
         if k < 1:
             raise ValueError("k must be a positive integer")
         self.k = k
+        self.bin = None
         super(BinomialPolicy, self).__init__(fs)
 
     @staticmethod
@@ -231,18 +232,19 @@ class BinomialPolicy(MergePolicy):
             if k == 0 or k == n:
                 return 1
             w = n + 1
-            bin = [0, ] * (w ** 2)
 
             def cell(row, col):
                 return row * w + col
 
-            for r in range(0, w):
-                for c in range(0, min(r, k)+1):
-                    if c == 0 or c == r:
-                        bin[cell(r,c)] = 1
-                    else:
-                        bin[cell(r,c)] = bin[cell(r-1,c-1)] + bin[cell(r-1,c)]
-            return bin[cell(n,k)]
+            if self.bin is None or len(self.bin) != (w ** 2):
+                self.bin = [0, ] * (w ** 2)
+                for r in range(0, w):
+                    for c in range(0, min(r, k)+1):
+                        if c == 0 or c == r:
+                            self.bin[cell(r, c)] = 1
+                        else:
+                            self.bin[cell(r, c)] = self.bin[cell(r-1, c-1)] + self.bin[cell(r-1, c)]
+            return self.bin[cell(n, k)]
 
         def binomial_index(d, h, t):
             if t == 0:
@@ -431,6 +433,7 @@ class MinLatencyPolicy(MergePolicy):
         if k < 1:
             raise ValueError("k must be a positive integer")
         self.k = k
+        self.bin = None
         super(MinLatencyPolicy, self).__init__(fs, ratio)
 
     @staticmethod
@@ -449,18 +452,19 @@ class MinLatencyPolicy(MergePolicy):
             if k == 0 or k == n:
                 return 1
             w = n + 1
-            bin = [0, ] * (w ** 2)
 
             def cell(row, col):
                 return row * w + col
 
-            for r in range(0, w):
-                for c in range(0, min(r, k)+1):
-                    if c == 0 or c == r:
-                        bin[cell(r,c)] = 1
-                    else:
-                        bin[cell(r,c)] = bin[cell(r-1,c-1)] + bin[cell(r-1,c)]
-            return bin[cell(n,k)]
+            if self.bin is None or len(self.bin) != (w ** 2):
+                self.bin = [0, ] * (w ** 2)
+                for r in range(0, w):
+                    for c in range(0, min(r, k)+1):
+                        if c == 0 or c == r:
+                            self.bin[cell(r, c)] = 1
+                        else:
+                            self.bin[cell(r, c)] = self.bin[cell(r-1, c-1)] + self.bin[cell(r-1, c)]
+            return self.bin[cell(n, k)]
 
         def binomial_index(d, h, t):
             if t == 0:
